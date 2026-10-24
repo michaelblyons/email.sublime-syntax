@@ -274,7 +274,7 @@ contexts:
     - meta_content_scope: meta.region.body.email
     - include: pop-before-boundary
     - match: ''
-      embed: html-with-quoted-printable
+      embed: scope:text.html.basic.quoted-printable
       escape: ^(?=--[a-zA-Z0-9-=_?:]+(--)?$)
 
   body-content-quoted-printable:
@@ -298,7 +298,7 @@ contexts:
       embed: scope:text.xml
       escape: ^(?=--[a-zA-Z0-9-=_?:]+(--)?$)
     - match: ^(?=(?:<html|<!DOCTYPE html)\b)
-      embed: scope:text.html.basic
+      embed: scope:text.html.basic.quoted-printable
       escape: ^(?=--[a-zA-Z0-9-=_?:]+(--)?$)
     - include: base64-line
 
@@ -306,17 +306,6 @@ contexts:
     - meta_content_scope: meta.region.body.email
     - include: pop-before-boundary
     - include: base64-line
-
-  html-with-quoted-printable:
-    - match: ''
-      push: scope:text.html.basic
-      with_prototype:
-        # Unbreak QP version of `=` in attributes
-        - match: \b=3[dD](?=['"])
-          scope: constant.character.escape.eml punctuation.separator.key-value.html
-          push:
-            - scope:text.html.basic#tag-generic-attribute-value
-        - include: quoted-printable
 
   base64-line:
     # Content-Transfer-Encoding: base64
@@ -452,14 +441,14 @@ contexts:
     - include: ignore-qp-newline-pop-nonws
 
   ip-addresses:
-    - match: '(\[){{ipv4}}(\])'
+    - match: (\[){{ipv4}}(\])
       scope: constant.numeric.ip-address.v4.eml
       captures:
         1: punctuation.definition.constant.begin.eml
         2: punctuation.definition.constant.end.eml
     - match: '{{ipv4}}'
       scope: constant.numeric.ip-address.v4.eml
-    - match: '(\[){{ipv6}}(\])'
+    - match: (\[){{ipv6}}(\])
       scope: constant.numeric.ip-address.v6.eml
       captures:
         1: punctuation.definition.constant.begin.eml
@@ -470,9 +459,10 @@ contexts:
   email-addresses:
     # john.doe@example.com
     # <john.doe@example.com>
-    - match: '(<?)mailto:'
+    - match: (<?)mailto(:)
       captures:
         1: punctuation.definition.string.begin.eml
+        2: punctuation.separator.sequence.eml
       push:
         - meta_content_scope: markup.underline.link.email.eml
         - match: (>?)(?=[^\w.@-])

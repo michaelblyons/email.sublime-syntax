@@ -1,0 +1,73 @@
+%YAML 1.2
+---
+name: HTML (Quoted Printable)
+scope: text.html.basic.quoted-printable
+version: 2
+
+extends: Packages/HTML/HTML.sublime-syntax
+
+file_extensions: []
+
+##############################################################################
+
+contexts:
+
+  prototype:
+    - meta_prepend: true
+    - match: =[0-9a-fA-F]{2}
+      scope: constant.character.escape.eml
+    - match: =\n
+      scope: punctuation.separator.continuation.eml
+
+  tag-generic-attribute-name:
+    - meta_prepend: true
+    - meta_include_prototype: false
+
+  tag-generic-attribute-assignment:
+    - meta_prepend: true
+    - meta_include_prototype: false
+    - match: \b=3[dD](?=['"])
+      scope: constant.character.escape.eml punctuation.separator.key-value.html
+      set: tag-generic-attribute-value
+
+  tag-id-attribute-assignment:
+    - meta_prepend: true
+    - meta_include_prototype: false
+    - match: \b=3[dD](?=['"])
+      scope: constant.character.escape.eml punctuation.separator.key-value.html
+      set: tag-id-attribute-value
+
+  tag-href-attributes-assignment:
+    - meta_prepend: true
+    - meta_include_prototype: false
+    - match: \b=3[dD](?=['"])
+      scope: constant.character.escape.eml punctuation.separator.key-value.html
+      set: tag-href-attribute-value
+
+  tag-event-attribute-assignment:
+    - meta_prepend: true
+    - meta_include_prototype: false
+    - match: \b=3[dD](?=['"])
+      scope: constant.character.escape.eml punctuation.separator.key-value.html
+      set: tag-event-attribute-value
+
+  tag-class-attribute-assignment:
+    - meta_prepend: true
+    - meta_include_prototype: false
+    - match: \b=3[dD](?=['"])
+      scope: constant.character.escape.eml punctuation.separator.key-value.html
+      set: tag-class-attribute-value
+
+  tag-style-attribute-assignment:
+    - meta_prepend: true
+    - meta_include_prototype: false
+    - match: \b=3[dD](?=['"])
+      scope: constant.character.escape.eml punctuation.separator.key-value.html
+      set: tag-style-attribute-value
+
+  style-type-attribute-assignment:
+    - meta_prepend: true
+    - meta_include_prototype: false
+    - match: \b=3[dD](?=['"])
+      scope: constant.character.escape.eml punctuation.separator.key-value.html
+      set: style-type-attribute-value
